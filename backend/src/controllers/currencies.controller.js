@@ -1,10 +1,15 @@
 import { currenciesService } from "../services"
 
-export const GetCurrenciesController = async (req, res, next) => {
-  try {
-    const data = await currenciesService.getCodesList();
-    res.send(data); 
-  } catch (error) {
-    next(error);
+export const CurrenciesController = (req, res, next) => {
+  const handlersMap = {
+    'GET': async () => {
+      try {
+        const data = await currenciesService.getCodesList();
+        res.send(data); 
+      } catch (error) {
+        next(error);
+      }
+    }
   }
+  return handlersMap[req.method];
 }
