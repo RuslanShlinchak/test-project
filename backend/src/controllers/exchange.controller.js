@@ -2,7 +2,7 @@ import { exchangeService } from "../services"
 
 export const ExchangeController = async (req, res, next) => {
   const handlersMap = {
-    post: async () => {
+    'POST': async () => {
       try {
         const result = await exchangeService.convert(req.body);
         res.send(result);
