@@ -1,0 +1,15 @@
+.app {
+  width: 300px;
+  margin: 0 auto;
+}
+
+.form-group-wrapper {
+  width: 100%;
+  display: grid;
+}
+
+.form-btns {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
