@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';

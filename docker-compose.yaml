@@ -1,18 +1,19 @@
-version: '3.8'
+version: "3"
 services:
   api:
     build: ./backend
     container_name: api_backend
     ports:
-      - '3001:3001'
+      - 3001:3001
     environment:
-      - API_KEY=b9630d3d0674aca0e246295c
+      - API_KEY=${API_KEY}
+      - PORT=3001
   client:
     build: ./frontend
     container_name: client_frontend
     ports:
-      - '3000:3000'
+      - 3000:80
     environment:
-      - API_ENDPOINT=api_backend
-    stdin_open: true
-    tty: true
+      - API_ENDPOINT=api
+    links:
+      - api

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon -r esm ./src/app.js",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "start": "node ./dist/app.js"
   },
   "author": "",
@@ -21,6 +21,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
+    "axios": "^1.2.1",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

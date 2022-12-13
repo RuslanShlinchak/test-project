@@ -2,14 +2,12 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-COPY package.json .
+COPY package.json /app
 
 RUN npm install
 
+COPY . /app
+
 RUN npm run build
 
-COPY . .
-
-EXPOSE 3001
-
-CMD ["node", "dist/app.js"]
+CMD ["npm", "start"]
