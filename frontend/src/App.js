@@ -1,4 +1,4 @@
-import React, { useEffect, memo, useState } from 'react';
+import React, { useEffect, memo, useState, useMemo } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
@@ -11,6 +11,24 @@ import './App.css';
 const API_ENDPOINT = process.env.API_ENDPOINT || "http://localhost:3001";
 const DEFAULT_CURRENCY = 'USD';
 
+const callFetch = async (url, params = {}) => {
+  const options = {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    ...params
+  }
+  try {
+    const response = await fetch(`${API_ENDPOINT}/${url}`, options);
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 const useFetch = ({
   url,
   withDelay = false
@@ -21,8 +39,7 @@ const useFetch = ({
 
   const makeRequest = async (params = {}) => {
     try {
-      const response = await fetch(`${API_ENDPOINT}/${url}`, params);
-      const result = await response.json();
+      const result = await callFetch(url, params);
       setValue(result);
     } catch (error) {
       setError(error);
@@ -52,12 +69,12 @@ const SelectField = ({ name, label, list = [] }) => {
         labelId={name}
         name={name}
         value={field.value}
-        onChange={(value) => {
-          helpers.setValue(value);
+        onChange={(e) => {
+          helpers.setValue(e.target.value);
         }}
       >
         {list.map(item => {
-          return (<MenuItem value={item.value}>{item.label}</MenuItem>)
+          return (<MenuItem key={item.value} value={item.value}>{item.label}</MenuItem>)
         })}
       </Select>
     </FormControl>
@@ -88,37 +105,42 @@ const FormGroupWrapper = ({ children }) => {
   )
 }
 
-const FormContainer = memo(function FormContainer ({ resetForm }) {
+const FormContainer = ({ resetForm, values }) => {
   const [result, setResult] = useState(0);
-  const { makeRequest } = useFetch({
-    url: 'exchange',
-    withDelay: true
-  });
-  const { value: currencyList = [] } = useFetch({
+  const { value: currencyList } = useFetch({
     url: 'currencies'
   });
+  const options = useMemo(() => {
+    if (!currencyList) return [];
+
+    return currencyList.map(([value, label]) => ({ value, label }));
+  }, [currencyList]);
 
   const handleClear = () => {
     setResult(0);
     resetForm();
   }
-  
-  const handleSubmit = async (values) => {
-    const result = await makeRequest({
-      method: "POST",
-      body: JSON.stringify(values)
-    });
-    setResult(result.to);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { toAmount } = await callFetch(
+      'exchange',
+      {
+        method: "POST",
+        body: JSON.stringify(values)
+      }
+    );
+    setResult(toAmount)
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroupWrapper>
-        <SelectField label="From" list={currencyList || []} name="from" />
+        <SelectField label="From" list={options} name="from" />
         <InputField name="amount" />
       </FormGroupWrapper>
       <FormGroupWrapper>
-        <SelectField label="To" list={currencyList || []} name="to" />
+        <SelectField label="To" list={options} name="to" />
         <TextField 
           value={result} 
           disabled
@@ -130,9 +152,7 @@ const FormContainer = memo(function FormContainer ({ resetForm }) {
       </div>
     </Form>
   )
-}, () => {
-  return true
-})
+}
 
 const App = () => {
   return (
@@ -146,7 +166,7 @@ const App = () => {
         }}
       >
         {(props) => {
-          return <FormContainer resetForm={props.resetForm} />
+          return <FormContainer { ...props } />
         }}
       </Formik>
     </div>

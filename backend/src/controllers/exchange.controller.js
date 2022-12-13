@@ -11,5 +11,5 @@ export const ExchangeController = async (req, res, next) => {
       }
     }
   };
-  return handlersMap[req.method];
+  return handlersMap[req.method]();
 }

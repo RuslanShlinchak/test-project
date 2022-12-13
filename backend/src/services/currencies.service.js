@@ -5,7 +5,7 @@ class CurrenciesService {
     const result = await apiService.makeRequest({
       url: '/codes'
     });
-    return result.supported_codes;
+    return result.data.supported_codes;
   }
 }
 

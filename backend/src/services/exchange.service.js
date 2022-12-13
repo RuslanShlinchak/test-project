@@ -1,8 +1,8 @@
 import { apiService } from "./api.service";
 
 class ExchangeService {
-  async getConversionRates(currency) {
-    await apiService.makeRequest({
+  getConversionRates(currency) {
+    return apiService.makeRequest({
       url: `/latest/${currency}`
     })
   }
@@ -12,12 +12,12 @@ class ExchangeService {
     to,
     amount
   }) {
-    const { conversion_rates } = await this.getConversionRates(from);
-    const rate = conversion_rates[to];
+    const { data } = await this.getConversionRates(from);
+    const rate = data.conversion_rates[to];
     const result = rate * amount;
     return {
-      fromAmount: 1000,
-      toAmount: result
+      fromAmount: Number(amount),
+      toAmount: Number(result)
     }
   }
 }

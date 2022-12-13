@@ -5,11 +5,11 @@ export const CurrenciesController = (req, res, next) => {
     'GET': async () => {
       try {
         const data = await currenciesService.getCodesList();
-        res.send(data); 
+        res.send(data);
       } catch (error) {
         next(error);
       }
     }
   }
-  return handlersMap[req.method];
+  return handlersMap[req.method]();
 }
