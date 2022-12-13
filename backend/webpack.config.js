@@ -6,20 +6,17 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
         }
       }
     ]
   },
-  target: 'node',
   output: {
-    filename: 'app.js',
-    libraryTarget: 'commonjs2',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, 'dist'),
+    publicPath: '/',
+    filename: 'app.js'
   },
+  target: 'node',
 }
